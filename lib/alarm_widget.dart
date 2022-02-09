@@ -4,15 +4,15 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:natural_wakeup/constants.dart';
 import 'package:natural_wakeup/set_alarm_screen.dart';
-import 'package:provider/provider.dart';
 
 import 'alarm.dart';
-import 'data.dart';
 
 class AlarmWidget extends StatefulWidget {
   Alarm alarm;
+  var buildContext;
 
-  AlarmWidget({Key? key, required this.alarm}) : super(key: key);
+  AlarmWidget({Key? key, required this.alarm, this.buildContext})
+      : super(key: key);
 
   @override
   _AlarmWidgetState createState() => _AlarmWidgetState();
@@ -124,13 +124,11 @@ class _AlarmWidgetState extends State<AlarmWidget> {
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
-                          widget.alarm.alarmCreated = true;
-                          Provider.of<Data>(context, listen: false)
-                              .addAlarm(Alarm());
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const SetAlarmScreen()),
+                                builder: (context) => SetAlarmScreen(
+                                    buildContext: widget.buildContext)),
                           );
                         });
                       },

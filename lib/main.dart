@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: MyHomePage(),
     );
   }
@@ -51,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Center(
                         child: Consumer<Data>(builder: (context, data, child) {
                           return Column(
-                            children: getAlarmWidgets(data.alarms),
+                            children: getAlarmWidgets(data.alarms, context),
                           );
                         }),
                       ),
@@ -103,11 +104,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-List<Widget> getAlarmWidgets(List<Alarm> alarms) {
+List<Widget> getAlarmWidgets(List<Alarm> alarms, var buildContext) {
   List<Widget> widgets = [];
   widgets.add(Padding(padding: EdgeInsets.all(25)));
   for (Alarm alarm in alarms) {
     widgets.add(AlarmWidget(
+      buildContext: buildContext,
       alarm: alarm,
     ));
     widgets.add(Padding(padding: EdgeInsets.all(7)));

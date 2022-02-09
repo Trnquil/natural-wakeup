@@ -4,6 +4,7 @@ import 'alarm.dart';
 
 class Data extends ChangeNotifier {
   List<Alarm> alarms = [Alarm()];
+  int currentAlarm = 0;
 
   addAlarm(Alarm alarm) {
     alarms.add(alarm);

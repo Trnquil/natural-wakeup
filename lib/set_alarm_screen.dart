@@ -1,71 +1,159 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import 'alarm.dart';
+import 'alarm_item.dart';
+import 'data.dart';
 
 class SetAlarmScreen extends StatefulWidget {
-  const SetAlarmScreen({Key? key}) : super(key: key);
+  var buildContext;
+  SetAlarmScreen({Key? key, required this.buildContext}) : super(key: key);
 
   @override
   _SetAlarmScreenState createState() => _SetAlarmScreenState();
 }
 
 class _SetAlarmScreenState extends State<SetAlarmScreen> {
+  List<Image> soundImages = [
+    Image.asset(
+      "assets/nature.png",
+      fit: BoxFit.scaleDown,
+    ),
+    Image.asset(
+      "assets/beach.png",
+      fit: BoxFit.scaleDown,
+    ),
+    Image.asset(
+      "assets/kap.png",
+      fit: BoxFit.scaleDown,
+    )
+  ];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       bottom: false,
       top: false,
       child: Scaffold(
-        body: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Padding(padding: EdgeInsets.all(20)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 20),
-                child: Image(
-                  image: AssetImage('assets/x.png'),
-                  height: 20,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: Image(
-                  image: AssetImage('assets/greentick.png'),
-                  height: 30,
-                ),
-              ),
-            ],
-          ),
-          Container(
-            height: 200,
-            child: new Swiper(
-              layout: SwiperLayout.STACK,
-              itemBuilder: (BuildContext context, int index) {
-                return new Image.asset(
-                  "assets/nature.png",
-                  fit: BoxFit.scaleDown,
-                );
-              },
-              itemCount: 3,
-              itemWidth: 200,
-              itemHeight: 100,
-              pagination: new SwiperPagination(
-                  margin: new EdgeInsets.all(0.0),
-                  builder: new SwiperCustomPagination(builder:
-                      (BuildContext context, SwiperPluginConfig config) {
-                    return new ConstrainedBox(
-                      child: new Row(
-                        children: <Widget>[],
-                      ),
-                      constraints: new BoxConstraints.expand(height: 50.0),
-                    );
-                  })),
-              control: new SwiperControl(
-                  disableColor: Colors.transparent, color: Colors.transparent),
+        body: Stack(
+          children: [
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                  child: Center(
+                    child: Text(
+                      'DELETE',
+                      style: GoogleFonts.ptSans(
+                          fontWeight: FontWeight.normal,
+                          color: Color(0xffff0000),
+                          fontSize: 15),
+                    ),
+                  ),
+                  margin: EdgeInsets.only(bottom: 30),
+                  decoration: BoxDecoration(
+                      color: Color(0x2Bff0000),
+                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                  height: 40,
+                  width: 120),
             ),
-          ),
-        ]),
+            Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+              Padding(padding: EdgeInsets.all(20)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Image(
+                          image: AssetImage('assets/x.png'),
+                          height: 20,
+                        ),
+                      )),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: GestureDetector(
+                      onTap: () {
+                        Provider.of<Data>(widget.buildContext, listen: false)
+                            .addAlarm(Alarm(time: "5:00", alarmCreated: true));
+                        Navigator.pop(context);
+                      },
+                      child: Image(
+                        image: AssetImage('assets/greentick.png'),
+                        height: 30,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Padding(padding: const EdgeInsets.only(top: 20)),
+              Container(
+                height: 100,
+                child: new Swiper(
+                  layout: SwiperLayout.DEFAULT,
+                  scale: 0.2,
+                  fade: 0.2,
+                  viewportFraction: 0.3,
+                  itemBuilder: (BuildContext context, int index) {
+                    return soundImages[index];
+                  },
+                  itemCount: 3,
+                  //itemWidth: 200,
+                  //itemHeight: 120,
+                  pagination: new SwiperPagination(
+                      margin: new EdgeInsets.all(0.0),
+                      builder: new SwiperCustomPagination(builder:
+                          (BuildContext context, SwiperPluginConfig config) {
+                        return new ConstrainedBox(
+                          child: new Row(
+                            children: <Widget>[],
+                          ),
+                          constraints: new BoxConstraints.expand(height: 0.0),
+                        );
+                      })),
+                  control: new SwiperControl(
+                      disableColor: Colors.transparent,
+                      color: Colors.transparent),
+                ),
+              ),
+              Padding(padding: EdgeInsets.only(top: 20)),
+              AlarmItem(
+                title: "Sound",
+                selectedTitle: "Mountains",
+                arrowEnabled: false,
+              ),
+              Padding(padding: EdgeInsets.only(top: 10)),
+              Container(
+                margin: EdgeInsets.only(left: 40, right: 40),
+                height: 1,
+                color: Color(0xff9d9d9d),
+              ),
+              Padding(padding: EdgeInsets.only(top: 10)),
+              AlarmItem(
+                title: "Time",
+                selectedTitle: "6:00",
+                arrowEnabled: true,
+              ),
+              Padding(padding: EdgeInsets.only(top: 10)),
+              Container(
+                margin: EdgeInsets.only(left: 40, right: 40),
+                height: 1,
+                color: Color(0xff9d9d9d),
+              ),
+              Padding(padding: EdgeInsets.only(top: 10)),
+              AlarmItem(
+                title: "Label",
+                selectedTitle: "Morning Routine",
+                arrowEnabled: true,
+              ),
+            ]),
+          ],
+        ),
       ),
     );
   }
