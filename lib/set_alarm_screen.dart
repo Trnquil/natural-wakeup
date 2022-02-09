@@ -19,20 +19,7 @@ class SetAlarmScreen extends StatefulWidget {
 }
 
 class _SetAlarmScreenState extends State<SetAlarmScreen> {
-  List<Image> soundImages = [
-    Image.asset(
-      "assets/nature.png",
-      fit: BoxFit.scaleDown,
-    ),
-    Image.asset(
-      "assets/beach.png",
-      fit: BoxFit.scaleDown,
-    ),
-    Image.asset(
-      "assets/kap.png",
-      fit: BoxFit.scaleDown,
-    )
-  ];
+  List<String> sounds = ["nature", "beach", "kap"];
 
   @override
   Widget build(BuildContext context) {
@@ -44,28 +31,31 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
           children: [
             Align(
               alignment: Alignment.bottomCenter,
-              child: GestureDetector(
-                onTap: () {
-                  Provider.of<Data>(widget.buildContext, listen: false)
-                      .removeAlarm(widget.alarm);
-                  Navigator.pop(context);
-                },
-                child: Container(
-                    child: Center(
-                      child: Text(
-                        'DELETE',
-                        style: GoogleFonts.ptSans(
-                            fontWeight: FontWeight.normal,
-                            color: Color(0xffff0000),
-                            fontSize: 15),
+              child: Visibility(
+                visible: widget.alarm.alarmCreated,
+                child: GestureDetector(
+                  onTap: () {
+                    Provider.of<Data>(widget.buildContext, listen: false)
+                        .removeAlarm(widget.alarm);
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                      child: Center(
+                        child: Text(
+                          'DELETE',
+                          style: GoogleFonts.ptSans(
+                              fontWeight: FontWeight.normal,
+                              color: Color(0xffff0000),
+                              fontSize: 15),
+                        ),
                       ),
-                    ),
-                    margin: EdgeInsets.only(bottom: 30),
-                    decoration: BoxDecoration(
-                        color: Color(0x2Bff0000),
-                        borderRadius: BorderRadius.all(Radius.circular(20))),
-                    height: 40,
-                    width: 120),
+                      margin: EdgeInsets.only(bottom: 30),
+                      decoration: BoxDecoration(
+                          color: Color(0x2Bff0000),
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                      height: 40,
+                      width: 120),
+                ),
               ),
             ),
             Column(mainAxisAlignment: MainAxisAlignment.start, children: [
@@ -111,8 +101,16 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
                   scale: 0.2,
                   fade: 0.2,
                   viewportFraction: 0.3,
+                  onIndexChanged: (int index) {
+                    setState(() {
+                      widget.alarm.sound = sounds[index];
+                    });
+                  },
                   itemBuilder: (BuildContext context, int index) {
-                    return soundImages[index];
+                    return Image.asset(
+                      "assets/${sounds[index]}.png",
+                      fit: BoxFit.scaleDown,
+                    );
                   },
                   itemCount: 3,
                   //itemWidth: 200,
