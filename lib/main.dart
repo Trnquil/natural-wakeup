@@ -41,12 +41,6 @@ class _MyHomePageState extends State<MyHomePage> {
             top: false,
             bottom: false,
             child: Scaffold(
-              floatingActionButton: FloatingActionButton(
-                backgroundColor: alarm_active_color,
-                onPressed: () {
-                  Provider.of<Data>(context, listen: false).removeAllAlarms();
-                },
-              ),
               body: _selectedIndex == 0
                   ? SingleChildScrollView(
                       child: Center(

@@ -10,7 +10,9 @@ import 'data.dart';
 
 class SetAlarmScreen extends StatefulWidget {
   var buildContext;
-  SetAlarmScreen({Key? key, required this.buildContext}) : super(key: key);
+  Alarm alarm;
+  SetAlarmScreen({Key? key, required this.buildContext, required this.alarm})
+      : super(key: key);
 
   @override
   _SetAlarmScreenState createState() => _SetAlarmScreenState();
@@ -42,22 +44,29 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
           children: [
             Align(
               alignment: Alignment.bottomCenter,
-              child: Container(
-                  child: Center(
-                    child: Text(
-                      'DELETE',
-                      style: GoogleFonts.ptSans(
-                          fontWeight: FontWeight.normal,
-                          color: Color(0xffff0000),
-                          fontSize: 15),
+              child: GestureDetector(
+                onTap: () {
+                  Provider.of<Data>(widget.buildContext, listen: false)
+                      .removeAlarm(widget.alarm);
+                  Navigator.pop(context);
+                },
+                child: Container(
+                    child: Center(
+                      child: Text(
+                        'DELETE',
+                        style: GoogleFonts.ptSans(
+                            fontWeight: FontWeight.normal,
+                            color: Color(0xffff0000),
+                            fontSize: 15),
+                      ),
                     ),
-                  ),
-                  margin: EdgeInsets.only(bottom: 30),
-                  decoration: BoxDecoration(
-                      color: Color(0x2Bff0000),
-                      borderRadius: BorderRadius.all(Radius.circular(20))),
-                  height: 40,
-                  width: 120),
+                    margin: EdgeInsets.only(bottom: 30),
+                    decoration: BoxDecoration(
+                        color: Color(0x2Bff0000),
+                        borderRadius: BorderRadius.all(Radius.circular(20))),
+                    height: 40,
+                    width: 120),
+              ),
             ),
             Column(mainAxisAlignment: MainAxisAlignment.start, children: [
               Padding(padding: EdgeInsets.all(20)),
@@ -79,8 +88,11 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
                     padding: const EdgeInsets.only(right: 20),
                     child: GestureDetector(
                       onTap: () {
-                        Provider.of<Data>(widget.buildContext, listen: false)
-                            .addAlarm(Alarm(time: "5:00", alarmCreated: true));
+                        if (!widget.alarm.alarmCreated) {
+                          widget.alarm.alarmCreated = true;
+                          Provider.of<Data>(widget.buildContext, listen: false)
+                              .addAlarm(Alarm());
+                        }
                         Navigator.pop(context);
                       },
                       child: Image(
@@ -124,7 +136,7 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
               Padding(padding: EdgeInsets.only(top: 20)),
               AlarmItem(
                 title: "Sound",
-                selectedTitle: "Mountains",
+                selectedTitle: widget.alarm.sound,
                 arrowEnabled: false,
               ),
               Padding(padding: EdgeInsets.only(top: 10)),
@@ -136,7 +148,7 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
               Padding(padding: EdgeInsets.only(top: 10)),
               AlarmItem(
                 title: "Time",
-                selectedTitle: "6:00",
+                selectedTitle: widget.alarm.time,
                 arrowEnabled: true,
               ),
               Padding(padding: EdgeInsets.only(top: 10)),
@@ -148,7 +160,7 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
               Padding(padding: EdgeInsets.only(top: 10)),
               AlarmItem(
                 title: "Label",
-                selectedTitle: "Morning Routine",
+                selectedTitle: widget.alarm.description,
                 arrowEnabled: true,
               ),
             ]),
