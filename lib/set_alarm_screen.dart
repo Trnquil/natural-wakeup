@@ -38,82 +38,31 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
             ],
           ),
           Container(
+            height: 200,
             child: new Swiper(
+              layout: SwiperLayout.STACK,
               itemBuilder: (BuildContext context, int index) {
-                return new Image.network(
-                  "http://via.placeholder.com/350x150",
-                  fit: BoxFit.fill,
+                return new Image.asset(
+                  "assets/nature.png",
+                  fit: BoxFit.scaleDown,
                 );
               },
               itemCount: 3,
-              pagination: new SwiperPagination(),
-              control: new SwiperControl(),
-            ),
-          ),
-          Container(
-            height: 200,
-            child: RotatedBox(
-              quarterTurns: 1,
-              child: ListWheelScrollView(
-                  itemExtent: 100,
-                  diameterRatio: 1.5,
-                  offAxisFraction: 0.4,
-                  children: [
-                    RotatedBox(
-                      quarterTurns: 3,
-                      child: Image(
-                        image: AssetImage('assets/nature.png'),
+              itemWidth: 200,
+              itemHeight: 100,
+              pagination: new SwiperPagination(
+                  margin: new EdgeInsets.all(0.0),
+                  builder: new SwiperCustomPagination(builder:
+                      (BuildContext context, SwiperPluginConfig config) {
+                    return new ConstrainedBox(
+                      child: new Row(
+                        children: <Widget>[],
                       ),
-                    ),
-                    RotatedBox(
-                      quarterTurns: 3,
-                      child: Image(
-                        image: AssetImage('assets/nature.png'),
-                      ),
-                    ),
-                    RotatedBox(
-                      quarterTurns: 3,
-                      child: Image(
-                        image: AssetImage('assets/nature.png'),
-                      ),
-                    ),
-                    RotatedBox(
-                      quarterTurns: 3,
-                      child: Image(
-                        image: AssetImage('assets/beach.png'),
-                      ),
-                    ),
-                    RotatedBox(
-                      quarterTurns: 3,
-                      child: Image(
-                        image: AssetImage('assets/nature.png'),
-                      ),
-                    ),
-                    RotatedBox(
-                      quarterTurns: 3,
-                      child: Image(
-                        image: AssetImage('assets/nature.png'),
-                      ),
-                    ),
-                    RotatedBox(
-                      quarterTurns: 3,
-                      child: Image(
-                        image: AssetImage('assets/nature.png'),
-                      ),
-                    ),
-                    RotatedBox(
-                      quarterTurns: 3,
-                      child: Image(
-                        image: AssetImage('assets/nature.png'),
-                      ),
-                    ),
-                    RotatedBox(
-                      quarterTurns: 3,
-                      child: Image(
-                        image: AssetImage('assets/nature.png'),
-                      ),
-                    ),
-                  ]),
+                      constraints: new BoxConstraints.expand(height: 50.0),
+                    );
+                  })),
+              control: new SwiperControl(
+                  disableColor: Colors.transparent, color: Colors.transparent),
             ),
           ),
         ]),
