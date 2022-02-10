@@ -32,6 +32,9 @@ dependencies:
   flutter_switch: ^0.3.2
   provider: ^6.0.0
   flutter_swiper: ^1.1.6
+  state_persistence: ^0.1.0
+  path_provider: ^2.0.4
+  shared_preferences: ^2.0.7
 
 dev_dependencies:
   flutter_test:

@@ -83,6 +83,8 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
                           Provider.of<Data>(widget.buildContext, listen: false)
                               .addAlarm(Alarm());
                         }
+                        Provider.of<Data>(widget.buildContext, listen: false)
+                            .changeAlarmProperty();
                         Navigator.pop(context);
                       },
                       child: Image(
