@@ -19,7 +19,15 @@ class SetAlarmScreen extends StatefulWidget {
 }
 
 class _SetAlarmScreenState extends State<SetAlarmScreen> {
-  List<String> sounds = ["nature", "beach", "kap"];
+  List<String> sounds = ["nature", "beach", "kap", "stadtbild", "berge"];
+  int offset = 0;
+  late Alarm newAlarm;
+
+  initState() {
+    super.initState();
+    offset = sounds.indexOf(widget.alarm.sound);
+    newAlarm = widget.alarm.copy();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +40,11 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Visibility(
-                visible: widget.alarm.alarmCreated,
+                visible: newAlarm.alarmCreated,
                 child: GestureDetector(
                   onTap: () {
                     Provider.of<Data>(widget.buildContext, listen: false)
-                        .removeAlarm(widget.alarm);
+                        .removeAlarm(newAlarm);
                     Navigator.pop(context);
                   },
                   child: Container(
@@ -78,8 +86,12 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
                     padding: const EdgeInsets.only(right: 20),
                     child: GestureDetector(
                       onTap: () {
-                        if (!widget.alarm.alarmCreated) {
-                          widget.alarm.alarmCreated = true;
+                        Provider.of<Data>(widget.buildContext, listen: false)
+                            .replaceAlarm(widget.alarm, newAlarm);
+
+                        //because alarm is now created, make sure alarmCreated is set to true and add a new uncreated alarm
+                        if (!newAlarm.alarmCreated) {
+                          newAlarm.alarmCreated = true;
                           Provider.of<Data>(widget.buildContext, listen: false)
                               .addAlarm(Alarm());
                         }
@@ -105,16 +117,16 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
                   viewportFraction: 0.3,
                   onIndexChanged: (int index) {
                     setState(() {
-                      widget.alarm.sound = sounds[index];
+                      newAlarm.sound = sounds[(index + offset) % sounds.length];
                     });
                   },
                   itemBuilder: (BuildContext context, int index) {
                     return Image.asset(
-                      "assets/${sounds[index]}.png",
+                      "assets/${sounds[(index + offset) % sounds.length]}.png",
                       fit: BoxFit.scaleDown,
                     );
                   },
-                  itemCount: 3,
+                  itemCount: sounds.length,
                   //itemWidth: 200,
                   //itemHeight: 120,
                   pagination: new SwiperPagination(
@@ -136,7 +148,7 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
               Padding(padding: EdgeInsets.only(top: 20)),
               AlarmItem(
                 title: "Sound",
-                selectedTitle: widget.alarm.sound,
+                selectedTitle: newAlarm.sound,
                 arrowEnabled: false,
               ),
               Padding(padding: EdgeInsets.only(top: 10)),
@@ -148,7 +160,7 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
               Padding(padding: EdgeInsets.only(top: 10)),
               AlarmItem(
                 title: "Time",
-                selectedTitle: widget.alarm.time,
+                selectedTitle: newAlarm.time,
                 arrowEnabled: true,
               ),
               Padding(padding: EdgeInsets.only(top: 10)),
@@ -160,7 +172,7 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
               Padding(padding: EdgeInsets.only(top: 10)),
               AlarmItem(
                 title: "Label",
-                selectedTitle: widget.alarm.description,
+                selectedTitle: newAlarm.description,
                 arrowEnabled: true,
               ),
             ]),

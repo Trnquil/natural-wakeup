@@ -19,6 +19,13 @@ class Data extends ChangeNotifier {
     writeAlarms();
   }
 
+  replaceAlarm(Alarm oldAlarm, Alarm newAlarm) {
+    int index = alarms.indexOf(oldAlarm);
+    alarms.remove(oldAlarm);
+    alarms.insert(index, newAlarm);
+    notifyListeners();
+  }
+
   addAlarm(Alarm alarm) {
     alarms.add(alarm);
     notifyListeners();

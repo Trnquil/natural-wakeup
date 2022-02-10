@@ -20,6 +20,17 @@ class Alarm {
     alarmCreated = m['alarmCreated'];
   }
 
+  Alarm copy() {
+    Alarm newAlarm = Alarm(
+        time: this.time,
+        description: this.description,
+        sound: this.sound,
+        alarmOn: this.alarmOn,
+        alarmCreated: this.alarmCreated);
+
+    return newAlarm;
+  }
+
   String toString() {
     return "Alarm " +
         "\"" +
