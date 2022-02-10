@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'alarm.dart';
 import 'alarm_item.dart';
+import 'constants.dart';
 import 'data.dart';
 
 class SetAlarmScreen extends StatefulWidget {
@@ -22,11 +24,13 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
   List<String> sounds = ["nature", "beach", "kap", "stadtbild", "berge"];
   int offset = 0;
   late Alarm newAlarm;
+  TextEditingController textFieldController = TextEditingController();
 
   initState() {
     super.initState();
     offset = sounds.indexOf(widget.alarm.sound);
     newAlarm = widget.alarm.copy();
+    textFieldController.text = newAlarm.description;
   }
 
   @override
@@ -44,7 +48,7 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
                 child: GestureDetector(
                   onTap: () {
                     Provider.of<Data>(widget.buildContext, listen: false)
-                        .removeAlarm(newAlarm);
+                        .removeAlarm(widget.alarm);
                     Navigator.pop(context);
                   },
                   child: Container(
@@ -170,10 +174,54 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
                 color: Color(0xff9d9d9d),
               ),
               Padding(padding: EdgeInsets.only(top: 10)),
-              AlarmItem(
-                title: "Label",
-                selectedTitle: newAlarm.description,
-                arrowEnabled: true,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 40),
+                    child: Text('Label',
+                        style: GoogleFonts.ptSans(
+                            color: Colors.black, fontSize: 15)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 40),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 150,
+                          height: 25,
+                          child: TextField(
+                            onChanged: (value) {
+                              newAlarm.description = value;
+                            },
+                            inputFormatters: [
+                              FilteringTextInputFormatter.deny(
+                                RegExp(emojiRegexp),
+                              ),
+                            ],
+                            cursorColor: Color(0xff9d9d9d),
+                            maxLength: 20,
+                            textAlign: TextAlign.right,
+                            controller: textFieldController,
+                            obscureText: false,
+                            style: GoogleFonts.ptSans(
+                                color: Color(0xff9d9d9d), fontSize: 15),
+                            decoration: InputDecoration(
+                                border: InputBorder.none, counterText: ''),
+                          ),
+                        ),
+                        Padding(padding: EdgeInsets.only(left: 10)),
+                        Visibility(
+                          visible: true,
+                          child: Image(
+                            image: AssetImage('assets/right_arrow.png'),
+                            height: 10,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ]),
           ],
