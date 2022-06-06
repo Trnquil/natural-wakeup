@@ -1,5 +1,3 @@
-import 'dart:isolate';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -8,6 +6,7 @@ import 'package:natural_wakeup/alarm_widget.dart';
 import 'package:natural_wakeup/constants.dart';
 import 'package:provider/provider.dart';
 
+import 'alarm_utils.dart';
 import 'data.dart';
 
 final int helloAlarmID = 0;
@@ -37,39 +36,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  //index of bottom navigation bar selection
   int _selectedIndex = 0;
   double _bottomBarIconSize = 30;
-
-  void scheduleAlarm() async {
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('x');
-
-    final InitializationSettings initializationSettings =
-        InitializationSettings(android: initializationSettingsAndroid);
-
-    await FlutterLocalNotificationsPlugin().initialize(initializationSettings);
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'alarm_notif',
-      'alarm_notif',
-      sound: RawResourceAndroidNotificationSound('song'),
-    );
-
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-        sound: 'song.mp3',
-        presentAlert: true,
-        presentBadge: true,
-        presentSound: true);
-
-    var platformChannelSpecifics = NotificationDetails(
-        android: androidPlatformChannelSpecifics,
-        iOS: iOSPlatformChannelSpecifics);
-
-    DateTime alarmTime = DateTime.now();
-    alarmTime = alarmTime.add(Duration(seconds: 5));
-
-    await FlutterLocalNotificationsPlugin()
-        .schedule(0, 'Office', "Hello", alarmTime, platformChannelSpecifics);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,11 +52,11 @@ class _MyHomePageState extends State<MyHomePage> {
               floatingActionButton: FloatingActionButton(
                 onPressed: () async {
                   FlutterLocalNotificationsPlugin().cancelAll();
-                  scheduleAlarm();
-                  _getBatteryLevel();
-                  _setAlarm();
-                  print(_setAlarmMessage);
-                  print(_batteryLevel);
+
+                  DateTime alarmTime = DateTime.now();
+                  alarmTime = alarmTime.add(Duration(seconds: 5));
+
+                  AlarmUtils.scheduleAlarm(alarmTime, 'jogging');
                 },
               ),
               body: _selectedIndex == 0
