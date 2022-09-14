@@ -20,6 +20,9 @@ class AlarmUtils {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'alarm_notif',
       'alarm_notif',
+      importance: Importance.max,
+      priority: Priority.max,
+      ongoing: true,
       sound: RawResourceAndroidNotificationSound('song'),
     );
 

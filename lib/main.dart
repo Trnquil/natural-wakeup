@@ -6,7 +6,6 @@ import 'package:natural_wakeup/alarm_widget.dart';
 import 'package:natural_wakeup/constants.dart';
 import 'package:provider/provider.dart';
 
-import 'alarm_utils.dart';
 import 'data.dart';
 
 final int helloAlarmID = 0;
@@ -51,12 +50,21 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Scaffold(
               floatingActionButton: FloatingActionButton(
                 onPressed: () async {
-                  FlutterLocalNotificationsPlugin().cancelAll();
-
-                  DateTime alarmTime = DateTime.now();
-                  alarmTime = alarmTime.add(Duration(seconds: 5));
-
-                  AlarmUtils.scheduleAlarm(alarmTime, 'jogging');
+                  await flutterLocalNotificationsPlugin.schedule(
+                      0,
+                      "notification",
+                      'Notification Alert',
+                      DateTime.now(),
+                      NotificationDetails(
+                          android: AndroidNotificationDetails(
+                              "channel.id", "channel.name",
+                              importance: Importance.max,
+                              priority: Priority.high,
+                              color: Colors.white,
+                              playSound: true,
+                              sound: const UriAndroidNotificationSound(
+                                  "assets/tunes/pop.mp3"),
+                              icon: '@mipmap/ic_launcher')));
                 },
               ),
               body: _selectedIndex == 0
