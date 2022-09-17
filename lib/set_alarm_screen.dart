@@ -91,9 +91,14 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
                   Padding(
                     padding: const EdgeInsets.only(right: 20),
                     child: GestureDetector(
-                      onTap: () {
-                        AndroidAlarmManager.cancel(0);
-                        FlutterRingtonePlayer.stop();
+                      onTap: () async {
+                        await AndroidAlarmManager.oneShot(
+                          const Duration(seconds: 0),
+                          10,
+                          stopRingtone,
+                          exact: true,
+                          wakeup: true,
+                        );
 
                         Provider.of<Data>(widget.buildContext, listen: false)
                             .replaceAlarm(widget.alarm, newAlarm);
@@ -234,4 +239,8 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
       ),
     );
   }
+}
+
+Future<void> stopRingtone() async {
+  await FlutterRingtonePlayer.stop();
 }

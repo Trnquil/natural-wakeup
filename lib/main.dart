@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -9,13 +11,21 @@ import 'package:provider/provider.dart';
 
 import 'data.dart';
 
-final int helloAlarmID = 0;
+final int helloAlarmID = 10;
 AudioPlayer player = AudioPlayer();
 AudioCache cache = AudioCache();
+
+void printHello() {
+  final DateTime now = DateTime.now();
+  final int isolateId = Isolate.current.hashCode;
+  print("[$now] Hello, world! isolate=${isolateId} function='$printHello'");
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AndroidAlarmManager.initialize();
+  await AndroidAlarmManager.periodic(
+      const Duration(seconds: 1), helloAlarmID, printHello);
   runApp(MyApp());
 }
 
@@ -55,13 +65,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () async {
                   await AndroidAlarmManager.oneShot(
                     const Duration(seconds: 5),
-                    0,
+                    helloAlarmID,
                     playRingtone,
                     exact: true,
                     wakeup: true,
                   );
-                  await Future.delayed(Duration(seconds: 5))
-                      .then((value) async {});
                 },
               ),
               body: _selectedIndex == 0
@@ -135,7 +143,6 @@ List<Widget> getAlarmWidgets(List<Alarm> alarms, var buildContext) {
 }
 
 Future<void> playRingtone() async {
-  print("hi");
   await FlutterRingtonePlayer.play(
     fromAsset: "assets/song.mp3",
     looping: true, // Android only - API >= 28
