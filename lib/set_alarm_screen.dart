@@ -1,6 +1,8 @@
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -90,6 +92,9 @@ class _SetAlarmScreenState extends State<SetAlarmScreen> {
                     padding: const EdgeInsets.only(right: 20),
                     child: GestureDetector(
                       onTap: () {
+                        AndroidAlarmManager.cancel(0);
+                        FlutterRingtonePlayer.stop();
+
                         Provider.of<Data>(widget.buildContext, listen: false)
                             .replaceAlarm(widget.alarm, newAlarm);
 
